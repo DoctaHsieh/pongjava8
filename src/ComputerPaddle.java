@@ -27,37 +27,20 @@ public class ComputerPaddle implements Paddle {
 
     }
 
-    public void moveEasy(){
-        y = b1.getY() + 70;
 
-        if (y < 0){
-            y = 0;
-        }
-        if(y > 420){
-            y = 420;
-        }
-    }
 
     public void move() {
         y = b1.getY() - 40;
 
-        if (y < 0) {
+        if (y < 0)
             y = 0;
-        }
-        if (y > 420) {
-            y = 420;
-        }
-    }
-    public void moveHard() {
-        y = b1.getY() - 40;
 
-        if (y < 0) {
-            y = 0;
-        }
-        if (y > 420) {
+        if (y > 420)
             y = 420;
-        }
+
     }
+
+
     public int getY() {
         return (int)y;
     }

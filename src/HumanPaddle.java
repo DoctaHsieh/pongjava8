@@ -5,7 +5,7 @@ public class HumanPaddle implements Paddle {
     boolean upAccel, downAccel;
     final double GRAVITY = 0.94;
     int player, x;
-    Ball b1;
+  //  Ball b1;
 
 
     public HumanPaddle(int player) {
