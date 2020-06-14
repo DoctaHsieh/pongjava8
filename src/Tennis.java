@@ -11,11 +11,21 @@ public class Tennis extends Applet implements Runnable, KeyListener {
     HumanPaddle p1;
     Ball b1;
     ComputerPaddle p2;
-    boolean easy, normal, hard, gameStarted;
+
+    boolean easy, normal, hard;
+    boolean gameStarted, gameEnded;
+    private long gameTime = 0;
+
+    // Control the time of each level
+    static final int EASY_TIME_SEC = 30;
+    static final int NORMAL_TIME_SEC = 60;
+
+    public int easyscore, normalscore, hardscore, totalscore;
     Image img;
     Graphics gfx;
     private long startTime = 0;
-    private long gameTime = 0;
+    //gametime = how much time in seconds the player spend in the current game.
+
     private boolean running = false;
     long elapsed;
 
@@ -27,6 +37,7 @@ public class Tennis extends Applet implements Runnable, KeyListener {
         normal = false;
         hard = false;
         gameStarted = false;
+        gameEnded = false;
         this.addKeyListener(this);
         b1 = new Ball();
         p1 = new HumanPaddle(1);
@@ -38,22 +49,22 @@ public class Tennis extends Applet implements Runnable, KeyListener {
 
     }
 
+    // logic to display the game
     public void paint(Graphics g) {
         gfx.setColor(Color.black);
         gfx.fillRect(0, 0, WIDTH, HEIGHT);
+
         elapsed = gameTime  - startTime ;
+        easyscore = (int) elapsed;
         // Out of bound - Game will end
-        if(b1.getX() < -10 ){
+        if(gameEnded){
             gfx.setColor(Color.red);
-            gfx.setFont(new Font("Arial", 1, 25));
-            gameEnded();
-            gfx.drawString("Game Over. You survived for " +elapsed +" seconds." ,300,250);
-            System.out.println(gameTime);
-            System.out.println(elapsed);
+
+            gfx.drawString("Game Over. Your score was " +totalscore +"." ,300,250);
+
         }
         else {
-            gameTime = System.currentTimeMillis() / 1000;
-            gfx.drawString("", 300, 100);
+            gameTime = System.currentTimeMillis()/1000;
             p1.draw(gfx);
             b1.draw(gfx);
             p2.draw(gfx);
@@ -76,14 +87,6 @@ public class Tennis extends Applet implements Runnable, KeyListener {
             gfx.setColor(Color.white);
             gfx.drawString("Level: Hard.", 10, 20);
         }
-        if(b1.getX() < -10 ){
-            gfx.setColor(Color.red);
-            gfx.setFont(new Font("Arial", 1, 25));
-            gameEnded();
-            gfx.drawString("Game Over. You survived for " +elapsed +" seconds." ,300,250);
-            System.out.println(gameTime);
-            System.out.println(elapsed);
-        }
         g.drawImage(img, 0, 0, this);
     }
 
@@ -91,13 +94,37 @@ public class Tennis extends Applet implements Runnable, KeyListener {
         paint(g);
     }
 
+    // Logic to control the game
     public void run() {
         for (;;) {
             if (gameStarted) {
-                if ((System.currentTimeMillis()/1000)-startTime > 30&& (System.currentTimeMillis()/1000)-startTime < 60){
+                // check if ball goes out of bound
+                if(b1.getX() < -10 ){
+                    //easyEnded();
+                    gameEnded();
+                    if(easy){
+                        totalscore = easyscore;
+                    }
+                    if(normal ){
+                        normalscore = (int) ((elapsed - EASY_TIME_SEC) * 2);
+                        totalscore = easyscore + normalscore;
+                        easyscore = EASY_TIME_SEC;
+                    }
+                    if(hard){
+                        hardscore = (int)((elapsed - (NORMAL_TIME_SEC)) * 3);
+                        easyscore = EASY_TIME_SEC;
+                        normalscore = NORMAL_TIME_SEC * 2;
+                    }
+                    totalscore = easyscore+ normalscore + hardscore;
+                }
+                else{
+                    gameTime = System.currentTimeMillis() / 1000;
+                }
+                // Calculate which level we are in
+                if ((System.currentTimeMillis()/1000)-startTime > EASY_TIME_SEC && (System.currentTimeMillis()/1000)-startTime < NORMAL_TIME_SEC){
                     changeToNormal();
                 }
-                if ((System.currentTimeMillis()/1000)-startTime > 60){
+                if ((System.currentTimeMillis()/1000)-startTime > NORMAL_TIME_SEC){
                    changeToHard();
 
                 }
@@ -105,8 +132,7 @@ public class Tennis extends Applet implements Runnable, KeyListener {
                 p2.move();
                 b1.move();
                 b1.checkPaddleCollision(p1, p2);
-
-                            }
+            }
             repaint();
             try {
                 Thread.sleep(10);
@@ -129,7 +155,6 @@ public class Tennis extends Applet implements Runnable, KeyListener {
             this.startTime = System.currentTimeMillis() / 1000;
             this.running = true;
             b1.SetEasySpeed();
-            System.out.println(startTime);
         }
     }
 
@@ -177,9 +202,14 @@ public class Tennis extends Applet implements Runnable, KeyListener {
     }
     public void gameEnded(){
         gameStarted = false;
-        this.running = false;
+        gameEnded = true;
     }
+    //Checks if easy mode has ended and punches a time if it has.
+
 }
+
+
+
 
 
 
