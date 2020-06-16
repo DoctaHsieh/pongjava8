@@ -1,26 +1,34 @@
 import com.sun.deploy.security.SelectableSecurityManager;
 
 import java.awt.*;
+import java.util.Random;
 
 public class Ball {
+
     double  x, y;
     private double yVel, xVel;
-    double easySpeed, normalSpeed, hardSpeed;
+    double Speed, normalSpeed, hardSpeed;
+
+
+
+
 
     public Ball(){
         xVel = 0;
         yVel = 0;
         x = 350;
         y = 250;
-        easySpeed = 1;
-        normalSpeed = 2;
-        hardSpeed = 3;
+        Speed = 0;
+
+
     }
 
 
 
-    public void SetEasySpeed(){
+    public void SetSpeed(){
+        Speed++;
         int xDir = 1;
+
         int yDir = 1;
         if (xVel!= 0){
             xDir = (xVel > 0) ? 1 : -1;
@@ -28,55 +36,36 @@ public class Ball {
         if (yVel!= 0){
             yDir = (yVel > 0) ? 1 : -1;
         }
-        xVel = easySpeed * xDir; //* getRandomDirection();
-        yVel = easySpeed * yDir;// * getRandomDirection();
+        xVel = Speed * xDir;
+        yVel = Speed * yDir;
+
+
     }
-    public void SetNormalSpeed(){
-        int xDir = 1;
-        int yDir = 1;
-        if (xVel!= 0){
-            xDir = (xVel > 0) ? 1 : -1;
-        }
-        if (yVel!= 0){
-            yDir = (yVel > 0) ? 1 : -1;
-        }
-        xVel = normalSpeed * xDir; //* getRandomDirection();
-        yVel = normalSpeed * yDir;// * getRandomDirection();
-    }
-    public void SetHardSpeed(){
-        int xDir = 1;
-        int yDir = 1;
-        if (xVel!= 0){
-            xDir = (xVel > 0) ? 1 : -1;
-        }
-        if (yVel!= 0){
-            yDir = (yVel > 0) ? 1 : -1;
-        }
-        xVel = hardSpeed * xDir;// * getRandomDirection();
-        yVel = hardSpeed * yDir;// * getRandomDirection();
+    private Color randomColor(){
+        Random random = new Random();
+        int R = random.nextInt(256);
+        int G = random.nextInt(256);
+        int B = random.nextInt(256);
+        return new Color(R,B,G);
+
     }
 
-   // public int getRandomDirection(){
-       // int rand = (int)(Math.random() * 2);
-       // if (rand ==1)
-            //return 1;
-        //else
-            //return -1;
-    //}
+
+
 
 
     public void draw(Graphics g) {
-        g.setColor(Color.white);
+        g.setColor(randomColor());
         g.fillOval((int) x - 10, (int) y - 10, 20, 20);
     }
 
     public void checkPaddleCollision(Paddle p1, Paddle p2){
-        if(x <= 50) {
-            if(y >= p1.getY() && y <= p1.getY() +80)
+        if(x < 50) {
+            if(y > p1.getY() && y < p1.getY() +80)
                 xVel = -xVel;
         }
-        else if(x >= 650){
-            if(y >= p2.getY() && y <= p2.getY() + 80)
+        else if(x > 650){
+            if(y > p2.getY() && y < p2.getY() + 80)
                 xVel = -xVel;
         }
     }
@@ -85,12 +74,12 @@ public class Ball {
         x += xVel;
         y += yVel;
 
-        if(y <= 10) {
+        if(y < 10) {
             yVel = -yVel;
 
 
         }
-        if (y >= 490) {
+        if (y > 490) {
             yVel = -yVel;
 
         }

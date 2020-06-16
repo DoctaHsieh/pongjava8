@@ -19,6 +19,7 @@ public class Tennis extends Applet implements Runnable, KeyListener {
     // Control the time of each level
     static final int EASY_TIME_SEC = 30;
     static final int NORMAL_TIME_SEC = 60;
+    static final int INTERVAL = 30;
 
     public int easyscore, normalscore, hardscore, totalscore;
     Image img;
@@ -72,21 +73,19 @@ public class Tennis extends Applet implements Runnable, KeyListener {
 
         if(!easy && !normal && !hard){
             gfx.setColor(Color.white);
-            gfx.drawString("Ping Pong Ching Chong", 300, 100);
-            gfx.drawString("Press 1 to start easy. After 30 seconds: normal. 60 seconds: hard, where you will try to survive for as long as possible.", 25, 130);
+            gfx.drawString("Ping Pong Ching Chong", 250, 100);
+            gfx.drawString("Press 1 to start. Each 30 Seconds, levels will get harder.", 75, 130);
         }
-        if(easy && !normal && !hard){
+        if(gameStarted){
             gfx.setColor(Color.white);
-            gfx.drawString("Level: Easy.", 10, 20);
+            gfx.drawString("Level: " +b1.Speed, 10, 20);
         }
-        if(normal && !easy && !hard){
-            gfx.setColor(Color.white);
-            gfx.drawString("Level: Normal.", 10, 20);
+
+        if (b1.getXVel() == 0 && gameStarted){
+            System.out.println("xVel = 0?????");
         }
-        if(hard && !normal && !easy){
-            gfx.setColor(Color.white);
-            gfx.drawString("Level: Hard.", 10, 20);
-        }
+
+
         g.drawImage(img, 0, 0, this);
     }
 
@@ -105,6 +104,7 @@ public class Tennis extends Applet implements Runnable, KeyListener {
                     if(easy){
                         totalscore = easyscore;
                     }
+
                     if(normal ){
                         normalscore = (int) ((elapsed - EASY_TIME_SEC) * 2);
                         totalscore = easyscore + normalscore;
@@ -121,13 +121,13 @@ public class Tennis extends Applet implements Runnable, KeyListener {
                     gameTime = System.currentTimeMillis() / 1000;
                 }
                 // Calculate which level we are in
-                if ((System.currentTimeMillis()/1000)-startTime > EASY_TIME_SEC && (System.currentTimeMillis()/1000)-startTime < NORMAL_TIME_SEC){
-                    changeToNormal();
-                }
-                if ((System.currentTimeMillis()/1000)-startTime > NORMAL_TIME_SEC){
-                   changeToHard();
+                if ((System.currentTimeMillis()/1000)-startTime > INTERVAL * b1.Speed){
+                   b1.SetSpeed();
+
+
 
                 }
+
                 p1.move();
                 p2.move();
                 b1.move();
@@ -154,7 +154,8 @@ public class Tennis extends Applet implements Runnable, KeyListener {
             gameStarted = true;
             this.startTime = System.currentTimeMillis() / 1000;
             this.running = true;
-            b1.SetEasySpeed();
+            b1.SetSpeed();
+
         }
     }
 
@@ -181,25 +182,7 @@ public class Tennis extends Applet implements Runnable, KeyListener {
         }
         return elapsed;
     }
-    public void normal(){
-        normal = true;
-        gameStarted = true;
-        b1.SetNormalSpeed();
-    }
 
-    public void changeToNormal(){
-        normal = true;
-        easy = false;
-        b1.SetNormalSpeed();
-
-    }
-    public void changeToHard(){
-        hard = true;
-        easy = false;
-        normal = false;
-        b1.SetHardSpeed();
-
-    }
     public void gameEnded(){
         gameStarted = false;
         gameEnded = true;
