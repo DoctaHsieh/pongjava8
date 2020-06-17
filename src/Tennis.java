@@ -74,7 +74,7 @@ public class Tennis extends Applet implements Runnable, KeyListener {
         if(!easy && !normal && !hard){
             gfx.setColor(Color.white);
             gfx.drawString("Ping Pong Ching Chong", 250, 100);
-            gfx.drawString("Press 1 to start. Each 30 Seconds, levels will get harder.", 75, 130);
+            gfx.drawString("Press 1 to start. Each 30 Seconds, levels will get harder. You are the red paddle.", 75, 130);
         }
         if(gameStarted){
             gfx.setColor(Color.white);
